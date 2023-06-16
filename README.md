@@ -17,3 +17,4 @@ Win:
 5. start the server and open your browser on http://localhost:8080 to see the frontend
 6. Happy hacking 👩‍💻 👨‍💻
 
+![Visitors](https://api.visitorbadge.io/api/VisitorHit?user=toshydev&repo=todo-app&countColor=%237B1E7A)
