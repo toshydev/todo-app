@@ -1,23 +1,24 @@
-package click.snekhome.backend;
+package click.snekhome.backend.controller;
 
-import click.snekhome.backend.models.Card;
-import click.snekhome.backend.models.Status;
+import click.snekhome.backend.models.*;
 import click.snekhome.backend.service.CardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/todo")
+@RequestMapping("/api/todo")
 @RequiredArgsConstructor
 public class CardController {
 
     private final CardService cardService;
 
+    private static int cardCount;
+
     @GetMapping
-    public Map<Integer, Card> list() {
+    public List<Card> list() {
         return this.cardService.list();
     }
 
@@ -27,19 +28,25 @@ public class CardController {
     }
 
     @PostMapping
-    public Map<Integer, Card> add(@RequestBody Card card) {
-        this.cardService.add(card);
+    public List<Card> add(@RequestBody Map<String, String> details) {
+        if (cardCount < 1) {
+            cardCount = 1;
+        } else {
+            cardCount++;
+        }
+        Card cardToAdd = new Card(cardCount, details.get("description"), Status.valueOf(details.get("status")));
+        this.cardService.add(cardToAdd);
         return this.cardService.list();
     }
 
     @PutMapping("{id}")
-    public Card edit(@PathVariable int id, @RequestBody String description, @RequestBody Status status) {
-        this.cardService.edit(id, description, status);
+    public Card edit(@PathVariable int id, @RequestBody Map<String, String> details) {
+        this.cardService.edit(id, details.get("description"), Status.valueOf(details.get("status")));
         return this.cardService.get(id);
     }
 
     @DeleteMapping("{id}")
-    public Map<Integer, Card> delete(@PathVariable int id) {
+    public List<Card> delete(@PathVariable int id) {
         this.cardService.remove(id);
         return this.cardService.list();
     }
